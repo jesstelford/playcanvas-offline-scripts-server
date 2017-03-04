@@ -3,6 +3,8 @@ const path = require('path')
 const server = require('../')
 const portscanner = require('portscanner')
 
+const DEFAULT_PORT = 51000
+
 /* global fetch */
 require('isomorphic-fetch')
 
@@ -50,6 +52,26 @@ describe('Scripts path', () => {
   })
 })
 
+describe('Port', () => {
+  let app
+
+  afterEach(() => {
+    app.stop()
+  })
+
+  it('starts on the default port', () => {
+    app = server()
+    return portscanner.checkPortStatus(DEFAULT_PORT)
+      .then(status => expect(status).toBe('open'))
+  })
+
+  it('starts on the given port', () => {
+    app = server({port: 3000})
+    return portscanner.checkPortStatus(3000)
+      .then(status => expect(status).toBe('open'))
+  })
+})
+
 describe('Serving files', () => {
   let app
 
@@ -61,13 +83,8 @@ describe('Serving files', () => {
     app.stop()
   })
 
-  it('starts a server', () => (
-    portscanner.checkPortStatus(51000)
-      .then(status => expect(status).toBe('open'))
-  ))
-
   it('serves a known file', () => (
-    fetch('http://localhost:51000/doit.js')
+    fetch(`http://localhost:${DEFAULT_PORT}/doit.js`)
       .then(res => {
         expect(res.ok).toBeTruthy()
         expect(res.status).toBe(200)
@@ -75,7 +92,7 @@ describe('Serving files', () => {
   ))
 
   it('404s an unknown file', () => (
-    fetch('http://localhost:51000/idontexist.txt')
+    fetch(`http://localhost:${DEFAULT_PORT}/idontexist.txt`)
       .then(res => {
         expect(res.ok).toBeFalsy()
         expect(res.status).toBe(404)
@@ -83,7 +100,7 @@ describe('Serving files', () => {
   ))
 
   it('serves the contents of a js file', () => (
-    fetch('http://localhost:51000/doit.js')
+    fetch(`http://localhost:${DEFAULT_PORT}/doit.js`)
       .then(res => res.text())
       .then(res => {
         expect(res).toBe("console.log('Hi!')\n")
@@ -103,7 +120,7 @@ describe('Serving files from bad directory', () => {
   })
 
   it('404s file requests', () => (
-    fetch('http://localhost:51000/idontexist.txt')
+    fetch(`http://localhost:${DEFAULT_PORT}/idontexist.txt`)
       .then(res => {
         expect(res.ok).toBeFalsy()
         expect(res.status).toBe(404)
@@ -116,7 +133,7 @@ describe('Stopping the server', () => {
     const app = server()
     app.stop()
 
-    return portscanner.checkPortStatus(51000)
+    return portscanner.checkPortStatus(DEFAULT_PORT)
       .then(status => expect(status).toBe('closed'))
   })
 })

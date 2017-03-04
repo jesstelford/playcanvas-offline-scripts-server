@@ -6,7 +6,7 @@ const httpShutdown = require('http-shutdown')
 
 const PORT = 51000
 
-module.exports = function server ({scripts} = {}) {
+module.exports = function server ({scripts, port = PORT} = {}) {
   // Accept both relative & absolute paths, defaulting to `process.cwd()`
   const directory = path.resolve(scripts || '')
 
@@ -16,11 +16,11 @@ module.exports = function server ({scripts} = {}) {
     serve(req, res, finalhandler(req, res))
   }))
 
-  server.listen(PORT)
+  server.listen(port)
 
   return {
     scripts: directory,
-    port: PORT,
+    port,
     stop: () => server.shutdown()
   }
 }

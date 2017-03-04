@@ -10,17 +10,19 @@ const cli = meow(`
 
   Options
     -s, --scripts  Directory containing scripts (default: cwd)
+    -p, --port     Port to listen on (default: 51000)
 
   Examples
     $ pc-offline
     Listening on port 51000
 
-    $ pc-offline --scripts=~/dev/my-game/scripts
-    Listening on port 51000
+    $ pc-offline --scripts=~/dev/my-game/scripts --port=3000
+    Listening on port 3000
   `,
   {
     alias: {
-      s: 'scripts'
+      s: 'scripts',
+      p: 'port'
     }
   }
 )

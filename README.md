@@ -47,13 +47,14 @@ pc-offline
 
   Options
     -s, --scripts  Directory containing scripts (default: cwd)
+    -p, --port     Port to listen on (default: 51000)
 
   Examples
     $ pc-offline
     Listening on port 51000
 
-    $ pc-offline --scripts=~/dev/my-game/scripts
-    Listening on port 51000
+    $ pc-offline --scripts=~/dev/my-game/scripts --port=3000
+    Listening on port 3000
 ```
 
 #### Node module
@@ -61,7 +62,9 @@ pc-offline
 ```
 const pcOffline = require('playcanvas-offline-scripts');
 
-pcOffline({scripts: <dir>});
+pcOffline({scripts: <dir>, port: <number>});
 ```
 
-Where `scripts` is the directory containing scripts (default: cwd)
+Where;
+- `scripts` is the directory containing scripts (default: cwd)
+- `port` is an available port to start listening on (default: `51000`)
