@@ -18,20 +18,20 @@ Requirements:
 
 - [node.js](https://nodejs.org) >=6.5
 
-```
+```shell
 npm install -g playcanvas-offline-scripts-server
 ```
 
 #### Usage
 
-```
-pc-offline --scripts=~/my-scripts-directory/
+```shell
+pc-offline --scripts=~/my-scripts-directory
 ```
 
 -or-
 
-```
-cd ~/my-scripts-directory/
+```shell
+cd ~/my-scripts-directory
 pc-offline
 ```
 
@@ -59,7 +59,7 @@ pc-offline
 
 #### Node module
 
-```
+```javascript
 const pcOffline = require('playcanvas-offline-scripts');
 
 pcOffline({scripts: <dir>, port: <number>});
