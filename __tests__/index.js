@@ -1,7 +1,10 @@
 /* eslint-env jest */
 const path = require('path')
-const server = require('../')
+const Primus = require('primus')
 const portscanner = require('portscanner')
+
+const server = require('../')
+const primusConfig = require('../primus-config')
 
 const DEFAULT_PORT = 51000
 
@@ -135,5 +138,47 @@ describe('Stopping the server', () => {
 
     return portscanner.checkPortStatus(DEFAULT_PORT)
       .then(status => expect(status).toBe('closed'))
+  })
+})
+
+describe('Websockets', () => {
+  let app
+
+  beforeEach(() => {
+    app = server({scripts: '/tmp/idontexist'})
+  })
+
+  afterEach(() => {
+    app.stop()
+  })
+
+  it('exposes client primus bundle', () => (
+    fetch(`http://localhost:${DEFAULT_PORT}/primus/primus.js`)
+      .then(res => {
+        expect(res.ok).toBeTruthy()
+        expect(res.status).toBe(200)
+      })
+  ))
+
+  it('can connect web sockets', (done) => {
+    const Socket = Primus.createSocket(primusConfig)
+    // eslint-disable-next-line no-unused-vars
+    const client = new Socket(`http://localhost:${DEFAULT_PORT}`)
+
+    let opened = false
+    client.on('open', () => {
+      opened = true
+
+      // Immediately destroy the connection to complete the test
+      setImmediate(() => client.destroy())
+    })
+
+    client.on('destroy', () => {
+      expect(opened).toBeTruthy()
+      done()
+    })
+
+    // Fail test if there's an error connecting
+    client.on('error', done)
   })
 })
