@@ -7,10 +7,10 @@
     "pc-offline": "cli.js"
   },
   "engines": {
-    "node" : ">=6.5.0"
+    "node": ">=6.5.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,10 @@
   },
   "homepage": "https://github.com/jesstelford/playcanvas-offline-scripts-server#readme",
   "dependencies": {
+    "jest-cli": "^19.0.2",
     "meow": "^3.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
