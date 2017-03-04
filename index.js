@@ -39,6 +39,11 @@ module.exports = function server ({scripts, port = PORT} = {}) {
   return {
     scripts: directory,
     port,
-    stop: () => httpServer.shutdown()
+    stop: () => {
+      // close Websockets only
+      socketServer.destroy({close: false})
+      // close underlying http server
+      httpServer.shutdown()
+    }
   }
 }
