@@ -91,6 +91,26 @@ describe('Serving files', () => {
   ))
 })
 
+describe('Serving files from bad directory', () => {
+  let app
+
+  beforeEach(() => {
+    app = server({scripts: '/tmp/idontexist'})
+  })
+
+  afterEach(() => {
+    app.stop()
+  })
+
+  it('404s file requests', () => (
+    fetch('http://localhost:51000/idontexist.txt')
+      .then(res => {
+        expect(res.ok).toBeFalsy()
+        expect(res.status).toBe(404)
+      })
+  ))
+})
+
 describe('Stopping the server', () => {
   it('works', () => {
     const app = server()
