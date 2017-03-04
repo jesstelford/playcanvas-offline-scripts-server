@@ -2,7 +2,7 @@
 
 Use your own editor, offline, to edit PlayCanvas Scripts 2.0 `.js` files. 🎉
 
-[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/) [![Travis CI](https://img.shields.io/travis/jesstelford/playcanvas-offline-scripts/master.svg)]()
 
 ## Server
 
