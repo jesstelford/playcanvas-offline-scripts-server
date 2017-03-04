@@ -2319,6 +2319,10 @@ pretty-format@^19.0.0:
   dependencies:
     ansi-styles "^3.0.0"
 
+primus-emit@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/primus-emit/-/primus-emit-1.0.0.tgz#e4b23168706cbea7cba630b482806dbffdf4c3e9"
+
 primus@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/primus/-/primus-6.1.0.tgz#b3bf4c938eb07874b872bc2b0ce9c0da855d6c12"
