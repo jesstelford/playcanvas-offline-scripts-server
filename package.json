@@ -1,0 +1,36 @@
+{
+  "name": "playcanvas-offline-scripts",
+  "version": "0.0.0",
+  "description": "Enable offline script editing with PlayCanvas Scripts 2.0",
+  "main": "index.js",
+  "bin": {
+    "pc-offline": "cli.js"
+  },
+  "engines": {
+    "node" : ">=6.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jesstelford/playcanvas-offline-scripts-server.git"
+  },
+  "keywords": [
+    "playcanvas",
+    "html5",
+    "node",
+    "code",
+    "editor",
+    "editor"
+  ],
+  "author": "Jess Telford <hi+npm@jes.st> (http://jes.st)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jesstelford/playcanvas-offline-scripts-server/issues"
+  },
+  "homepage": "https://github.com/jesstelford/playcanvas-offline-scripts-server#readme",
+  "dependencies": {
+    "meow": "^3.7.0"
+  }
+}
