@@ -1,4 +1,3 @@
-const fs = require('fs')
 const upath = require('upath')
 const Vinyl = require('vinyl')
 const vinylFile = require('vinyl-file')
@@ -74,37 +73,41 @@ function setupOutgoingStreams ({watcher, directory, fileStream, fileRmStream}) {
     .on('error', console.error.bind(console))
 }
 
-function handleIncomingFile (filename, content, done) {
-  fs.writeFile(filename, content, done)
-}
-
-function handleIncomingFileRemove (filename, done) {
-  fs.unlink(filename, done)
-}
-
-function setupIncomingStreams ({directory, fileStream, fileRmStream}) {
+function setupIncomingStreams ({directory, fileStream, fileRmStream, onIncomingFile, onIncomingFileRemove}) {
   fileStream
     .pipe(convertStreamToVinyl)
     .pipe(readVinylFiles((content, file, stream, done) => {
-      handleIncomingFile(upath.join(directory, file.relative), content, done)
+      onIncomingFile(upath.join(directory, file.relative), content, done)
     }))
 
   fileRmStream
     .pipe(convertStreamToVinyl)
     .pipe(readVinylFiles((content, file, stream, done) => {
-      handleIncomingFileRemove(upath.join(directory, file.relative), done)
+      onIncomingFileRemove(upath.join(directory, file.relative), done)
     }))
 }
 
-module.exports = ({watcher, directory}) => (spark) => {
+module.exports = ({watcher, directory, onIncomingFile, onIncomingFileRemove}) => (spark) => {
   // added or changed files will be streamed here
   const fileStream = spark.substream('file')
 
   // removed files will be streamed here
   const fileRmStream = spark.substream('file-rm')
 
-  setupOutgoingStreams({watcher, directory, fileStream, fileRmStream})
-  setupIncomingStreams({directory, fileStream, fileRmStream})
+  setupOutgoingStreams({
+    watcher,
+    directory,
+    fileStream,
+    fileRmStream
+  })
+
+  setupIncomingStreams({
+    directory,
+    fileStream,
+    fileRmStream,
+    onIncomingFile,
+    onIncomingFileRemove
+  })
 
   /*
 

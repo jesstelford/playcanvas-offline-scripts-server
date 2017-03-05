@@ -192,5 +192,4 @@ describe('Destroying websockets when server stopped', () => {
   it.skip('copmletes any streaming before destroying socket', () => {
 
   })
-
 })
