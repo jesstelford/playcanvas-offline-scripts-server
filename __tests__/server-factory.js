@@ -140,7 +140,6 @@ describe('Websockets', () => {
 
   it('can connect web sockets', (done) => {
     const Socket = Primus.createSocket(primusConfig)
-    // eslint-disable-next-line no-unused-vars
     const client = new Socket(`http://localhost:${DEFAULT_PORT}`)
 
     let opened = false
@@ -159,4 +158,39 @@ describe('Websockets', () => {
     // Fail test if there's an error connecting
     client.on('error', done)
   })
+})
+
+describe('Destroying websockets when server stopped', () => {
+  let stop
+
+  beforeEach(() => {
+    stop = serverFactory({directory: process.cwd(), port: DEFAULT_PORT, socketConnector: () => {}})
+  })
+
+  it('destroys sockets', (done) => {
+    const Socket = Primus.createSocket(primusConfig)
+    const client = new Socket(`http://localhost:${DEFAULT_PORT}`)
+
+    let opened = false
+    client.on('open', () => {
+      opened = true
+    })
+
+    client.on('destroy', () => {
+      expect(opened).toBeTruthy()
+      done()
+    })
+
+    // Fail test if there's an error connecting
+    client.on('error', done)
+
+    // Stop server on next tick
+    // Should trigger `destroy` on socket
+    setImmediate(stop)
+  })
+
+  it.skip('copmletes any streaming before destroying socket', () => {
+
+  })
+
 })
