@@ -1,15 +1,15 @@
 /* eslint-env jest */
+
+jest.mock('../sparky', () => {
+  return jest.fn(() => {})
+})
+
 const path = require('path')
-const Primus = require('primus')
 const portscanner = require('portscanner')
 
 const server = require('../')
-const primusConfig = require('../primus-config')
 
 const DEFAULT_PORT = 51000
-
-/* global fetch */
-require('isomorphic-fetch')
 
 describe('return value', () => {
   let app
@@ -75,62 +75,6 @@ describe('Port', () => {
   })
 })
 
-describe('Serving files', () => {
-  let app
-
-  beforeEach(() => {
-    app = server({scripts: './__tests__/fixtures'})
-  })
-
-  afterEach(() => {
-    app.stop()
-  })
-
-  it('serves a known file', () => (
-    fetch(`http://localhost:${DEFAULT_PORT}/doit.js`)
-      .then(res => {
-        expect(res.ok).toBeTruthy()
-        expect(res.status).toBe(200)
-      })
-  ))
-
-  it('404s an unknown file', () => (
-    fetch(`http://localhost:${DEFAULT_PORT}/idontexist.txt`)
-      .then(res => {
-        expect(res.ok).toBeFalsy()
-        expect(res.status).toBe(404)
-      })
-  ))
-
-  it('serves the contents of a js file', () => (
-    fetch(`http://localhost:${DEFAULT_PORT}/doit.js`)
-      .then(res => res.text())
-      .then(res => {
-        expect(res).toBe("console.log('Hi!')\n")
-      })
-  ))
-})
-
-describe('Serving files from bad directory', () => {
-  let app
-
-  beforeEach(() => {
-    app = server({scripts: '/tmp/idontexist'})
-  })
-
-  afterEach(() => {
-    app.stop()
-  })
-
-  it('404s file requests', () => (
-    fetch(`http://localhost:${DEFAULT_PORT}/idontexist.txt`)
-      .then(res => {
-        expect(res.ok).toBeFalsy()
-        expect(res.status).toBe(404)
-      })
-  ))
-})
-
 describe('Stopping the server', () => {
   it('works', () => {
     const app = server()
@@ -138,47 +82,5 @@ describe('Stopping the server', () => {
 
     return portscanner.checkPortStatus(DEFAULT_PORT)
       .then(status => expect(status).toBe('closed'))
-  })
-})
-
-describe('Websockets', () => {
-  let app
-
-  beforeEach(() => {
-    app = server({scripts: '/tmp/idontexist'})
-  })
-
-  afterEach(() => {
-    app.stop()
-  })
-
-  it('exposes client primus bundle', () => (
-    fetch(`http://localhost:${DEFAULT_PORT}/primus/primus.js`)
-      .then(res => {
-        expect(res.ok).toBeTruthy()
-        expect(res.status).toBe(200)
-      })
-  ))
-
-  it('can connect web sockets', (done) => {
-    const Socket = Primus.createSocket(primusConfig)
-    // eslint-disable-next-line no-unused-vars
-    const client = new Socket(`http://localhost:${DEFAULT_PORT}`)
-
-    let opened = false
-    client.on('open', () => {
-      opened = true
-
-      // Immediately destroy the connection to complete the test
-      setImmediate(() => client.destroy())
-    })
-
-    client.on('destroy', () => {
-      expect(opened).toBeTruthy()
-      done()
-    })
-
-    // Fail test if there's an error connecting
-    client.on('error', done)
   })
 })
